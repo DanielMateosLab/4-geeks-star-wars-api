@@ -101,7 +101,7 @@ def add_favourite(user_id):
         planet = Planet.query.get(id)
         if planet == None:
             return jsonify({ "error": "Planet not found" }), 404
-            
+
         user.planet_favourites.append(planet)
         db.session.commit()
         return jsonify(f"Added {planet} to {user} favourites"), 200
@@ -121,13 +121,41 @@ def add_favourite(user_id):
 @app.route('/users/<int:user_id>/favourites/people/<int:person_id>', methods=['DELETE'])
 def delete_person_favourite(user_id, person_id):
     "Deletes favorite person with id = person_id from user with id = user_id"
-    pass
+    user = User.query.get(user_id)
+    if user == None:
+        return jsonify({"error": "User not found"}), 404
 
-@app.route('/users/<int:user_id>/favourites/planet/<int:planet_id>', methods=['DELETE'])
+    person = People.query.get(person_id)
+    if person == None:
+        return jsonify({"error": "Person not found"}), 404
+
+    try:
+        user.people_favourites.remove(person) 
+        db.session.commit()
+        return jsonify({ "message": f"Removed {person} from {user}'s favourites"})
+    except ValueError:
+        return jsonify({ "error": f"{person} not in {user}'s favourites"})
+    
+
+@app.route('/users/<int:user_id>/favourites/planets/<int:planet_id>', methods=['DELETE'])
 def delete_planet_favourite(user_id, planet_id):
     "Deletes favorite person with id = planet_id from user with id = user_id"
-    pass
+    user = User.query.get(user_id)
+    if user == None:
+        return jsonify({"error": "User not found"}), 404
+    
 
+    planet = Planet.query.get(planet_id)
+    if planet == None:
+        return jsonify({"error": "Planet not found"}), 404
+
+    try:
+        user.planet_favourites.remove(planet) 
+        db.session.commit()
+        return jsonify({ "message": f"Removed {planet} from {user}'s favourites"})
+    except ValueError:
+        return jsonify({ "error": f"{planet} not in {user}'s favourites"})
+    
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
