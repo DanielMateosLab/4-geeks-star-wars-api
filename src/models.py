@@ -47,8 +47,8 @@ class People(db.Model):
     birthyear = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.String(6), nullable=False)
     height = db.Column(db.Integer, nullable=False)
-    # TODO: O:M relationship homeplanet = db.Column(db.Integer, db.ForeignKey('planet.id'), nullable=False)
-    
+    planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'), nullable=False)
+    homeplanet = db.relationship('Planet', lazy='subquery', backref='habitants')
 
     def __repr__(self):
         return self.name
