@@ -34,12 +34,14 @@ def sitemap():
 def get_people():
     "Returns the list of people"
     people = [people.serialize() for people in People.query.all()]
+
     return jsonify(people), 200
 
 @app.route('/people/<int:person_id>')
 def get_person(person_id):
     "Returns person with id = person_id"
     person = People.query.get(person_id).serialize()
+    
     return jsonify(person), 200
 
 # Planet endpoints
@@ -47,12 +49,14 @@ def get_person(person_id):
 def get_planets():
     "Returns the list of planets"
     planets = [planet.serialize() for planet in Planet.query.all()]
+
     return jsonify(planets), 200
 
 @app.route('/planets/<int:planet_id>')
 def get_planet(planet_id):
     "Returns planet with id = planet_id"
     planet = Planet.query.get(planet_id).serialize()
+
     return jsonify(planet), 200
 
 # User endpoints
@@ -72,6 +76,7 @@ def get_favourites(user_id):
         for favourite
         in user.planet_favourites + user.planet_favourites
     ]
+
     return jsonify(favourites), 200
 
 @app.route('/users/<int:user_id>/favourites', methods=['POST'])
