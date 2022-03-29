@@ -46,12 +46,14 @@ def get_person(person_id):
 @app.route('/planets')
 def get_planets():
     "Returns the list of planets"
-    pass
+    planets = [planet.serialize() for planet in Planet.query.all()]
+    return jsonify(planets)
 
 @app.route('/planets/<int:planet_id>')
 def get_planet(planet_id):
     "Returns planet with id = planet_id"
-    pass
+    planet = Planet.query.get(planet_id).serialize()
+    return jsonify(planet)
 
 # User endpoints
 @app.route('/users', methods=['GET'])
