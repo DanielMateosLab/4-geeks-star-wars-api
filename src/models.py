@@ -21,7 +21,7 @@ class User(db.Model):
     people_favourites = db.relationship('People', secondary=people_favourites, lazy='subquery')
     
     def __repr__(self):
-        return self.email
+        return self.name
 
     def serialize(self):
         return {
