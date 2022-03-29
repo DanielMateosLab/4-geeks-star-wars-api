@@ -40,6 +40,19 @@ class Planet(db.Model):
 
     def __repr__(self):
         return self.name
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "climate": self.climate,
+            "terrain": self.terrain,
+            "diameter": self.diameter,
+            "gravity": self.gravity,
+            "orbital_period": self.orbital_period,
+            "population": self.population
+        }
+
 
 class People(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,3 +65,13 @@ class People(db.Model):
 
     def __repr__(self):
         return self.name
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "birthyear": self.birthyear,
+            "gender": self.gender,
+            "height": self.height,
+            "homeplanet": self.homeplanet.name
+        }
