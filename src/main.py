@@ -66,6 +66,13 @@ def get_users():
 @app.route('/users/<int:user_id>/favourites')
 def get_favourites(user_id):
     "Returns favorites of user with id='user_id'"
+    user = User.query.get(user_id)
+    favourites = [
+        favourite.serialize()
+        for favourite
+        in user.planet_favourites + user.planet_favourites
+    ]
+    return jsonify(favourites), 200
 
 @app.route('/users/<int:user_id>/favourites', methods=['POST'])
 def add_favourite(user_id):
