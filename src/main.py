@@ -72,12 +72,13 @@ def get_favourites(user_id):
     "Returns favorites of user with id='user_id'"
     user = User.query.get(user_id)
     favourites = [
-        favourite.serialize()
-        for favourite
-        in user.planet_favourites + user.planet_favourites
-    ]
+            favourite.serialize()
+            for favourite
+            in user.planet_favourites + user.people_favourites
+        ]
 
     return jsonify(favourites), 200
+
 
 @app.route('/users/<int:user_id>/favourites', methods=['POST'])
 def add_favourite(user_id):
@@ -88,8 +89,34 @@ def add_favourite(user_id):
         "type": "planet" | "people",
         "id": Int
     }
-    """    
-    pass
+    """
+    user = User.query.get(user_id)
+    if user == None:
+        return jsonify({"error": "User not found"}), 404
+    
+    favouriteType = request.json["type"]
+    id = request.json["id"]
+
+    if favouriteType == "planet":
+        planet = Planet.query.get(id)
+        if planet == None:
+            return jsonify({ "error": "Planet not found" }), 404
+            
+        user.planet_favourites.append(planet)
+        db.session.commit()
+        return jsonify(f"Added {planet} to {user} favourites"), 200
+    
+    if favouriteType == "people":
+        person = People.query.get(id)
+        if person == None:
+            return jsonify({ "error": "Person not found" }), 404
+            
+        user.people_favourites.append(person)
+        db.session.commit()
+        return jsonify(f"Added {person} to {user} favourites"), 200
+            
+    return jsonify({ "error": "Invalid favourite type. Must be 'planet' or 'people'" }), 400
+
 
 @app.route('/users/<int:user_id>/favourites/people/<int:person_id>', methods=['DELETE'])
 def delete_person_favourite(user_id, person_id):
